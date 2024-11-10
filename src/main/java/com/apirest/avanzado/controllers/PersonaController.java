@@ -1,8 +1,8 @@
 package com.apirest.avanzado.controllers;
 
 import com.apirest.avanzado.entities.Persona;
-import com.apirest.avanzado.services.PersonaServices;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.apirest.avanzado.services.PersonaServiceImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,58 +10,25 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @CrossOrigin(origins = "*")
-@RequestMapping("api/personas")
-public class PersonaController {
-   @Autowired
-   PersonaServices personaServices;
+@RequestMapping("api/v1/personas") //url para acceder
+public class PersonaController extends BaseControllerImpl<Persona, PersonaServiceImpl> {
 
-    @GetMapping("")
-    public ResponseEntity<?> getAll(){
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(personaServices.findAll());
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam String filtro){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.search(filtro));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\":\"" + e.getMessage() + "\"}"));
         }
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getOne(@PathVariable Long id){
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(personaServices.findById(id));
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
 
-    @PostMapping("")
-    public ResponseEntity<?> save(@RequestBody Persona entity){
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(personaServices.save(entity));
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Persona entity){
-        try{
-            return ResponseEntity.status(HttpStatus.OK).body(personaServices.update(id, entity));
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id){
-        try{
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(personaServices.delete(id));
-        }
-        catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("{\"error\":\"Error, por favor intente más tarde\"}");
+    @GetMapping("/searchPaged")
+    public ResponseEntity<?> search(@RequestParam String filtro, Pageable pageable){
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(servicio.search(filtro, pageable));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(("{\"error\":\"" + e.getMessage() + "\"}"));
         }
     }
 }

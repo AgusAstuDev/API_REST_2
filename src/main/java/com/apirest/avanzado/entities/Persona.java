@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.envers.Audited;
 
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +15,7 @@ import java.util.List;
 @Builder
 @Audited
 @Table(name = "persona")
-public class Persona implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Persona extends Base {
 
     @Column(name="nombre")
     private String nombre;
